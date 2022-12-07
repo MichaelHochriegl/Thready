@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <PackageId>Thready</PackageId>
         <Authors>Michael Hochriegl</Authors>
-        <PackageIconUrl>icon.png</PackageIconUrl>
+        <PackageIcon>icon.png</PackageIcon>
         <Description>A small library to help with recurring execution of code in an extra thread.</Description>
         <PackageReadmeFile>readme.md</PackageReadmeFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -18,9 +18,9 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <None Include="icon.png" Pack="true" PackagePath=""/>
-        <None Include="../../readme.md" Pack="true" PackagePath="\"/>
-        <None Include="../../LICENSE" Pack="true" PackagePath="\"/>
+        <None Include="icon.png" Pack="true" PackagePath="\" Link="Content\Icon"/>
+        <None Include="..\..\readme.md" Pack="true" PackagePath="\"/>
+        <None Include="..\..\LICENSE" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
 </Project>
