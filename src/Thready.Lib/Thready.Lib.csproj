@@ -9,7 +9,7 @@
         <PackageIconUrl>icon.png</PackageIconUrl>
         <Description>A small library to help with recurring execution of code in an extra thread.</Description>
         <PackageReadmeFile>readme.md</PackageReadmeFile>
-        <PackageLicenseUrl>LICENSE</PackageLicenseUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageTags>thread, delay, worker</PackageTags>
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/MichaelHochriegl/Thready</RepositoryUrl>
@@ -18,7 +18,7 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <None Include="icon.png" Pack="true" PackagePath="\"/>
+        <None Include="icon.png" Pack="true" PackagePath=""/>
         <None Include="../../readme.md" Pack="true" PackagePath="\"/>
         <None Include="../../LICENSE" Pack="true" PackagePath="\"/>
     </ItemGroup>
