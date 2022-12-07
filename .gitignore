@@ -705,3 +705,8 @@ fabric.properties
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/rider,visualstudio,visualstudiocode,dotnetcore,csharp,sonar,sonarqube
+
+
+# Custom Changes
+## SonarLint Stuff
+.idea/.idea.Thready/.idea/sonarlint/
