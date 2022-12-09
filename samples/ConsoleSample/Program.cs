@@ -5,9 +5,10 @@ using Thready.Lib;
 var count = 0;
 
 Console.WriteLine("Hello, Thready!");
-var worker = new ThreadyWorker();
+var worker = new ThreadyWorker((ct) => IncreaseCount(),
+    async() => Console.WriteLine("Executing before stop"));
 
-await worker.StartAsync(IncreaseCount, TimeSpan.FromSeconds(1));
+await worker.StartAsync();
 
 Console.ReadKey();
 await worker.StopAsync();
