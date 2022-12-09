@@ -1,8 +1,8 @@
 # Thready <img src="./logo.png" height="60" width="60" >
-> The little helper with your annoying background tasks.
+> The little helper for your annoying background tasks.
 
 ## General Information
-`Thready` helps you with running a function in a background thread with a specif timeout.
+`Thready` helps you with running a function in a background thread with a specified timeout.
 
 ## Installation
 Apart from this installation technic described below you can use VS22 NuGet Manager or the Rider NuGet UI.
@@ -26,9 +26,11 @@ dotnet add package Thready --version 1.0.0-alpha
 *(If you want to see some code you can find a [sample app](https://github.com/MichaelHochriegl/Thready/tree/master/samples/ConsoleSample) right here in this repo)*
 After installing the package you can build your first 'worker' with these steps:
 ```csharp
-var worker = new ThreadyWorker();
+var worker = new ThreadyWorker(async(ct) => Console.WriteLine("This will get printed periodically"), async() => Console.WriteLine("This will get executed right before stopping"), TimeSpan.FromSeconds(1));
 
-await worker.StartAsync(IncreaseCount, TimeSpan.FromSeconds(1));
+await worker.StartAsync();
+// Your other code here...
+await worker.StopAsync(forceStop: false);
 ```
 
 ## Contribute
