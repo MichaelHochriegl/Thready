@@ -5,29 +5,41 @@
 /// </summary>
 public class ThreadyWorker
 {
+    private readonly SemaphoreSlim _semaphore = new(1, 1);
+    private readonly Func<CancellationToken, Task> _periodicFunc;
+    private readonly Func<Task>? _completionFunc;
+    private readonly TimeSpan _delay;
     private PeriodicTimer? _timer;
     private Task? _task;
-    private readonly SemaphoreSlim _semaphore = new(1, 1);
+    private CancellationTokenSource? _cts;
 
+    public ThreadyWorker(Func<CancellationToken, Task> periodicFunc, Func<Task>? completionFunc = null, TimeSpan? delay = null)
+    {
+        _periodicFunc = periodicFunc;
+        _completionFunc = completionFunc;
+        _delay = delay ?? TimeSpan.FromSeconds(1);
+    }
+    
     /// <summary>
-    /// Asynchronously starts this worker with a background thread and executes the given <paramref name="func"/>
-    /// with the <paramref name="delay"/>
+    /// Asynchronously starts this worker with a background thread and executes the operation with periodic with the set delay.
     /// </summary>
-    /// <param name="func"><see cref="Func{TResult}"/> that should be executed by this worker.</param>
-    /// <param name="delay"><see cref="TimeSpan"/> in which the <paramref name="func"/> should be executed.</param>
-    public async Task StartAsync(Func<Task> func, TimeSpan delay)
+    public async Task StartAsync()
     {
         await _semaphore.WaitAsync();
         try
         {
-            _timer = new PeriodicTimer(delay);
-            _task = Task.Run(async () =>
+            if (_timer is null && _cts is null)
             {
-                while (await _timer.WaitForNextTickAsync())
+                _timer = new PeriodicTimer(_delay);
+                _cts = new CancellationTokenSource();
+                _task = Task.Run(async () =>
                 {
-                    await func();
-                }
-            });
+                    while (await _timer.WaitForNextTickAsync(_cts.Token))
+                    {
+                        await _periodicFunc(_cts.Token);
+                    }
+                });
+            }
         }
         finally
         {
@@ -38,13 +50,37 @@ public class ThreadyWorker
     /// <summary>
     /// Asynchronously stops this worker.
     /// </summary>
-    public async Task StopAsync()
+    public async Task StopAsync(bool forceStop = false)
     {
-        _timer?.Dispose();
-
-        if (_task is not null)
+        await _semaphore.WaitAsync();
+        try
         {
-            await _task;
+            if (_task is null)
+            {
+                throw new InvalidOperationException("Can not stop a worker that has not yet been started!");
+            }
+
+            if (forceStop)
+            {
+                _cts?.Cancel();
+            }
+            
+            _timer?.Dispose();
+
+            if (_task is not null)
+            {
+                await _task;
+            }
+
+            if (_completionFunc is not null)
+            {
+                await _completionFunc();
+            }
+        }
+        finally
+        {
+            _cts?.Dispose();
+            _semaphore.Release();
         }
     }
 }
