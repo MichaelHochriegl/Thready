@@ -17,6 +17,7 @@ public class ThreadyWorkerTests
 
         // Assert
         await Task.Delay(100);
+        await sut.StopAsync();
         counter.Should().Be(10);
     }
 
